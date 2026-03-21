@@ -1,0 +1,66 @@
+// 1. Configuração de Constraints (Executar primeiro)
+CREATE CONSTRAINT movieseries_title IF NOT EXISTS FOR (m:MovieSeries) REQUIRE m.title IS UNIQUE;
+CREATE CONSTRAINT user_name IF NOT EXISTS FOR (u:User) REQUIRE u.name IS UNIQUE;
+CREATE CONSTRAINT actor_name IF NOT EXISTS FOR (a:Actor) REQUIRE a.name IS UNIQUE;
+CREATE CONSTRAINT director_name IF NOT EXISTS FOR (d:Director) REQUIRE d.name IS UNIQUE;
+CREATE CONSTRAINT genre_type IF NOT EXISTS FOR (g:Genre) REQUIRE g.type IS UNIQUE;
+
+// 2. Criação de Nós (Uso de MERGE para evitar duplicidade)
+UNWIND ["Alice Silva", "Bruno Souza", "Carla Dias", "Daniel Rocha", "Elena Martins", "Fábio Lima", "Hugo Torres", "Igor Mello", "Julia Costa", "Paula Santos"] AS name
+MERGE (:User {name: name});
+
+UNWIND ["Oppenheimer", "Dune", "Succession", "The Bear", "Inception", "Stranger Things", "Parasite", "Interstellar", "Breaking Bad", "Peaky Blinders"] AS title
+MERGE (:MovieSeries {title: title});
+
+UNWIND ["Drama", "Sci-Fi", "Horror", "Comedy", "Action", "Thriller", "Western", "Crime"] AS genre
+MERGE (:Genre {type: genre});
+
+UNWIND ["Cillian Murphy", "Zendaya", "Brian Cox", "Jeremy Allen White", "Leonardo DiCaprio", "Millie Bobby Brown", "Song Kang-ho", "Matthew McConaughey", "Bryan Cranston"] AS actor
+MERGE (:Actor {name: actor});
+
+UNWIND ["Christopher Nolan", "Denis Villeneuve", "Mark Mylod", "Christopher Storer", "Duffer Brothers", "Bong Joon-ho", "Vince Gilligan", "Steven Knight"] AS director
+MERGE (:Director {name: director});
+
+// 3. Relacionamentos: Atuação
+UNWIND [
+  {a: "Cillian Murphy", m: "Oppenheimer"}, {a: "Cillian Murphy", m: "Peaky Blinders"},
+  {a: "Zendaya", m: "Dune"}, {a: "Brian Cox", m: "Succession"},
+  {a: "Jeremy Allen White", m: "The Bear"}, {a: "Leonardo DiCaprio", m: "Inception"},
+  {a: "Millie Bobby Brown", m: "Stranger Things"}, {a: "Song Kang-ho", m: "Parasite"},
+  {a: "Matthew McConaughey", m: "Interstellar"}, {a: "Bryan Cranston", m: "Breaking Bad"}
+] AS cast
+MATCH (actor:Actor {name: cast.a}), (movie:MovieSeries {title: cast.m})
+MERGE (actor)-[:ACTED_IN]->(movie);
+
+// 4. Relacionamentos: Direção
+UNWIND [
+  {d: "Christopher Nolan", m: "Oppenheimer"}, {d: "Christopher Nolan", m: "Inception"},
+  {d: "Christopher Nolan", m: "Interstellar"}, {d: "Denis Villeneuve", m: "Dune"},
+  {d: "Mark Mylod", m: "Succession"}, {d: "Christopher Storer", m: "The Bear"},
+  {d: "Duffer Brothers", m: "Stranger Things"}, {d: "Bong Joon-ho", m: "Parasite"},
+  {d: "Vince Gilligan", m: "Breaking Bad"}, {d: "Steven Knight", m: "Peaky Blinders"}
+] AS job
+MATCH (dir:Director {name: job.d}), (movie:MovieSeries {title: job.m})
+MERGE (dir)-[:DIRECTED]->(movie);
+
+// 5. Relacionamentos: Gêneros
+UNWIND [
+  {m: "Oppenheimer", g: "Drama"}, {m: "Dune", g: "Sci-Fi"}, 
+  {m: "Succession", g: "Drama"}, {m: "The Bear", g: "Comedy"},
+  {m: "Inception", g: "Sci-Fi"}, {m: "Stranger Things", g: "Horror"},
+  {m: "Parasite", g: "Thriller"}, {m: "Interstellar", g: "Sci-Fi"},
+  {m: "Breaking Bad", g: "Drama"}, {m: "Peaky Blinders", g: "Drama"}
+] AS pair
+MATCH (movie:MovieSeries {title: pair.m}), (genre:Genre {type: pair.g})
+MERGE (movie)-[:IN_GENRE]->(genre);
+
+// 6. Relacionamentos: Avaliações
+UNWIND [
+  {u: "Alice Silva", m: "Oppenheimer", r: 8.3}, {u: "Bruno Souza", m: "Dune", r: 8.0},
+  {u: "Carla Dias", m: "Succession", r: 8.9}, {u: "Daniel Rocha", m: "The Bear", r: 8.6},
+  {u: "Elena Martins", m: "Inception", r: 8.8}, {u: "Fábio Lima", m: "Stranger Things", r: 8.7},
+  {u: "Hugo Torres", m: "Parasite", r: 8.5}, {u: "Igor Mello", m: "Interstellar", r: 8.7},
+  {u: "Julia Costa", m: "Breaking Bad", r: 9.5}, {u: "Paula Santos", m: "Peaky Blinders", r: 8.7}
+] AS review
+MATCH (user:User {name: review.u}), (movie:MovieSeries {title: review.m})
+MERGE (user)-[:WATCHED {rating: review.r}]->(movie);
