@@ -36,7 +36,7 @@
 - A teoria dos grafos é um ramo da matemática e ciência da computação que estuda relações entre objetos, modelados como grafos, formados por vértices (nós) e arestas (conexões). Utilizada para resolver problemas de conectividade, caminhos mínimos e redes (sociais, logísticas, entre outros), esta teoria, iniciada por Euler, abstrai situações complexas em estruturas visuais.
 
 ````
-Método de organização pessoal para elaborar dashboards.
+Método para organizar os dados em forma e grafos.
 ````
 
 ### Entendendo base de dados:
