@@ -3,7 +3,7 @@
 
 
 ## 🤖 Descrição:
->***O repositório é um Lab. (laboratório) com intenção de aplicar conceitos de modelagem de dados em grafos no desenvolvimento de uma ferramenta de serviço de Streaming (Files/Séries) para analisar os dados em forma de grafos, ou seja dados que tomam como base a Teoria dos Grafos, como exemplo de escopo, os nós (vértices) e as arestas (conexões). Transformando dados brutos (qualitativa/quantitativo) em informações para análise e tomada de decisões orientada a dados.***
+>***O repositório é um Lab. (laboratório) com intenção de aplicar conceitos de modelagem de dados em grafos no desenvolvimento de uma ferramenta de serviço de Streaming (Filmes/Séries) para analisar os dados em forma de grafos, ou seja dados que tomam como base a Teoria dos Grafos, como exemplo de escopo, os nós (vértices) e as arestas (conexões). Transformando dados brutos (qualitativa/quantitativo) em informações para análise e tomada de decisões orientada a dados.***
 
 ## 🗃️ Tópicos de Construção:
 - *Teoria dos Grafos;*
